@@ -11,10 +11,14 @@ string formString(string s){
 	for (int i = 0; i < s.length(); i++){
 		if (s[i] == ')'){
 				ans += " ";
+				ans += ")";
 		}
-		ans += s[i];
-		if (s[i] == '(' || s[i] == ' '){
+		else if (s[i] == '('){
+			ans += s[i];
 			ans += " ";
+		}
+		else{
+			ans += s[i];
 		}
 	}
 	return ans;
@@ -82,7 +86,7 @@ void getPostfix(vector<string> vec, string &postfix){
 		postfix += st.top() + " ";
 		st.pop();
 	}
-
+	postfix.erase(postfix.length() - 1);
 }
 
 float calculate(float a, float b, string s){
@@ -109,7 +113,7 @@ bool evaluatePostfix(float &res, string postfix){
 			st.pop();
 			st.push(calculate(a, b, s));
 		}else{
-			cout << s << endl;
+			
 			st.push(stof(s));
 		}
 	}
@@ -126,26 +130,25 @@ void solve(string inputFile, string outputFile, int n, string action){
 	for (int i = 0; i < n; i++){
 		string infix, postfix;
 		getline(fin, infix);
-		cout << infix << endl;
-		// infix = formString(infix);
+		infix = formString(infix);
 		
-		// vector<string> vec = split(infix);
+		vector<string> vec = split(infix);
+		getPostfix(vec, postfix);
 		
-		// getPostfix(vec, postfix);
-		// if (action == "-c"){
-			// float result;
-			// if (!evaluatePostfix(result, postfix) || infix == postfix){
-				// fout << "E" << endl;
-			// }else{
-				// fout << result << endl;
-			// }
-		// }else{
-			// if (infix == postfix){
-				// fout << "E" << endl;
-			// }else{
-				// fout << postfix << endl;
-			// }
-		// }
+		if (action == "-c"){
+			float result;
+			if (!evaluatePostfix(result, postfix) || infix == postfix){
+				fout << "E" << endl;
+			}else{
+				fout << result << endl;
+			}
+		}else{
+			if (infix == postfix){
+				fout << "E" << endl;
+			}else{
+				fout << postfix << endl;
+			}
+		}
 	}
 	
 	
@@ -160,21 +163,6 @@ int main(int argc, char** argv){
 	string action = (argv[3])? argv[3] : "";
 	
 	solve(inputFile, outputFile, n, action);
-
-	// string s = "+ 2 3";
-	// string initS = s;
-	// vector<string> vec;
-	// s = formString(s);
-	// vec = split(s);
-	// string postfix;
-	// getPostfix(vec, postfix);
-	// if (postfix == initS) cout <<"invalid";
-	// else {
-		// cout << postfix << endl;
-		// float result; 
-		// if (!evaluatePostfix(result, postfix)) cout << "invalid";
-		// else cout << result;
-	// }
 }
 
 // reference
