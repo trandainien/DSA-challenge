@@ -4,6 +4,7 @@
 #include <stack>
 #include <math.h>
 #include <fstream>
+#include <iomanip>
 using namespace std;
 
 string formString(string s){
@@ -140,7 +141,12 @@ void solve(string inputFile, string outputFile, int n, string action){
 			if (!evaluatePostfix(result, postfix) || infix == postfix){
 				fout << "E" << endl;
 			}else{
-				fout << result << endl;
+				fout << std::setprecision(3) << result << endl;
+				// std::stringstream ss;
+				// ss << std::setprecision(2) << result;
+				// std::string s = ss.str();
+				// fout << s << endl;
+				// cout << s << endl;
 			}
 		}else{
 			if (infix == postfix){
@@ -169,5 +175,6 @@ int main(int argc, char** argv){
 // https://www.tutorialspoint.com/Convert-Infix-to-Postfix-Expression#:~:text=To%20convert%20infix%20expression%20to,maintaining%20the%20precedence%20of%20them.
 // https://stackoverflow.com/questions/19894989/how-do-i-properly-test-whether-my-postfix-expression-is-valid
 // https://www.tutorialspoint.com/program-to-evaluate-postfix-notation-in-cplusplus
+// https://stackoverflow.com/questions/26562476/rounding-a-float-number-to-2-decimals-to-write-it-to-a-text-file
 
 // how to know if the expression is valid?
