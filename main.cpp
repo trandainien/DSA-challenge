@@ -10,11 +10,11 @@ using namespace std;
 string formString(string s){
 	string ans = "";
 	for (int i = 0; i < s.length(); i++){
-		if (s[i] == ')'){
+		if (s[i] == ')'  || s[i] == ']' || s[i] == '}'){
 				ans += " ";
-				ans += ")";
+				ans += s[i];
 		}
-		else if (s[i] == '('){
+		else if (s[i] == '(' || s[i] == '[' || s[i] == '{'){
 			ans += s[i];
 			ans += " ";
 		}
@@ -44,7 +44,7 @@ int getPrecedence(string s){
 
 bool isNumber(string s){
 	for (int i = 0; i < s.length(); i++){
-		if (s[i] == '(' || s[i] == ')' || s[i] == '^' || s[i] == '+' || s[i] == '-' || s[i] == '*' || s[i] == '/')
+		if (s[i] == '(' || s[i] == ')' || s[i] == '^' || s[i] == '+' || s[i] == '-' || s[i] == '*' || s[i] == '/' || s[i] == '[' || s[i] == ']' || s[i] == '{' || s[i] == '}')
 			return false;
 	}
 	return true;
@@ -59,11 +59,16 @@ void getPostfix(vector<string> vec, string &postfix){
 		if (isNumber(s)){
 			postfix += s + " ";
 		}else{
-			if (s == "(" || s == "^"){
+			if (s == "(" || s == "["  || s == "{" ||s == "^"){
 				st.push(s);
 			}else{
-				if (s == ")"){
-					while (st.top() != "empty" && st.top() != "("){
+				if (s == ")" || s == "]" || s == "}"){
+					string tmp;
+					if (s == ")") tmp = "(";
+					else if (s == "]") tmp = "[";
+					else tmp = "{";
+					
+					while (st.top() != "empty" && st.top() != tmp){
 						postfix += st.top() + " ";
 						st.pop();
 					}
@@ -105,6 +110,7 @@ bool evaluatePostfix(float &res, string postfix){
 	vector<string> vec = split(postfix);
 	for (int i = 0; i < vec.size(); i++){
 		string s = vec[i];
+		
 		if (!isNumber(s)){
 			if (st.empty()) return false;
 			a = st.top(); 
@@ -123,6 +129,16 @@ bool evaluatePostfix(float &res, string postfix){
 	return true;
 }
 
+bool isInfixValid(const char* expr, char open, char close) {
+  int parens = 0;
+  for (const char* p = expr; *p; ++p) {
+    if (*p == open) ++parens;
+    else if (*p == close && parens-- == 0) return false;
+  }
+  return parens == 0;
+}
+
+
 void solve(string inputFile, string outputFile, int n, string action){
 	ifstream fin;
 	fin.open(inputFile);
@@ -131,8 +147,12 @@ void solve(string inputFile, string outputFile, int n, string action){
 	for (int i = 0; i < n; i++){
 		string infix, postfix;
 		getline(fin, infix);
-		infix = formString(infix);
+		if (!isInfixValid(infix.c_str(), '(', ')') || !isInfixValid(infix.c_str(), '[', ']') || !isInfixValid(infix.c_str(), '{', '}')){
+			fout << "E" << endl;
+			continue;
+		}
 		
+		infix = formString(infix);
 		vector<string> vec = split(infix);
 		getPostfix(vec, postfix);
 		
@@ -141,12 +161,7 @@ void solve(string inputFile, string outputFile, int n, string action){
 			if (!evaluatePostfix(result, postfix) || infix == postfix){
 				fout << "E" << endl;
 			}else{
-				fout << std::setprecision(3) << result << endl;
-				// std::stringstream ss;
-				// ss << std::setprecision(2) << result;
-				// std::string s = ss.str();
-				// fout << s << endl;
-				// cout << s << endl;
+				fout << std::setprecision(2) << result << endl;
 			}
 		}else{
 			if (infix == postfix){
@@ -170,11 +185,3 @@ int main(int argc, char** argv){
 	
 	solve(inputFile, outputFile, n, action);
 }
-
-// reference
-// https://www.tutorialspoint.com/Convert-Infix-to-Postfix-Expression#:~:text=To%20convert%20infix%20expression%20to,maintaining%20the%20precedence%20of%20them.
-// https://stackoverflow.com/questions/19894989/how-do-i-properly-test-whether-my-postfix-expression-is-valid
-// https://www.tutorialspoint.com/program-to-evaluate-postfix-notation-in-cplusplus
-// https://stackoverflow.com/questions/26562476/rounding-a-float-number-to-2-decimals-to-write-it-to-a-text-file
-
-// how to know if the expression is valid?
