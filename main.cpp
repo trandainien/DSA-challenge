@@ -50,6 +50,13 @@ bool isNumber(string s){
 	return true;
 }
 
+bool checkValid1(vector<string> vec){
+	for (int i = 1; i < vec.size();  i++){
+		if (isNumber(vec[i]) && isNumber(vec[i-1])) return false; 
+	}
+	return true;
+}
+
 void getPostfix(vector<string> vec, string &postfix){
 	postfix = "";
 	stack <string> st;
@@ -129,6 +136,7 @@ bool evaluatePostfix(float &res, string postfix){
 	return true;
 }
 
+// if 2 number is next to each other then it is not infix
 bool isInfixValid(const char* expr, char open, char close) {
   int parens = 0;
   for (const char* p = expr; *p; ++p) {
@@ -154,8 +162,11 @@ void solve(string inputFile, string outputFile, int n, string action){
 		
 		infix = formString(infix);
 		vector<string> vec = split(infix);
+		if (!checkValid1(vec)){
+			fout << "E" << endl;
+			continue;
+		}
 		getPostfix(vec, postfix);
-		
 		if (action == "-c"){
 			float result;
 			if (!evaluatePostfix(result, postfix) || infix == postfix){
