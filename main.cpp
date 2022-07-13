@@ -175,7 +175,8 @@ void solve(string inputFile, string outputFile, int n, string action){
 				fout << std::setprecision(2) << result << endl;
 			}
 		}else{
-			if (infix == postfix){
+			float result;
+			if (!evaluatePostfix(result, postfix) || infix == postfix){
 				fout << "E" << endl;
 			}else{
 				fout << postfix << endl;
